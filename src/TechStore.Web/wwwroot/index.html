@@ -6,7 +6,7 @@
   <meta name="description" content="Nexa, tecnología seleccionada para el trabajo, el hogar y el movimiento.">
   <title>Nexa · Tecnología que encaja contigo</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/site.css?v=2">
 </head>
 <body>
   <header class="site-header">
@@ -47,10 +47,10 @@
     <section class="section catalog-section" id="catalogo">
       <div class="catalog-header"><div><p class="eyebrow">Catálogo</p><h2>Esenciales seleccionados</h2></div><div class="filters" role="group" aria-label="Filtrar catálogo"><button class="filter active" data-filter="all">Todo</button><button class="filter" data-filter="audio">Audio</button><button class="filter" data-filter="movilidad">Movilidad</button><button class="filter" data-filter="trabajo">Trabajo</button></div></div>
       <div class="product-grid" id="productGrid">
-        <article class="product-card" data-category="audio" data-name="Pulse Pro"><span class="product-tag">Más vendido</span><div class="product-art art-headphones"><span></span></div><div class="product-info"><div><p>Audio</p><h3>Pulse Pro</h3></div><strong>S/ 549</strong></div><button class="add-button" data-product="Pulse Pro">Agregar al carrito</button></article>
-        <article class="product-card" data-category="trabajo" data-name="Arc Mini"><span class="product-tag tag-neutral">Nuevo</span><div class="product-art art-keyboard"><span></span></div><div class="product-info"><div><p>Trabajo</p><h3>Arc Mini</h3></div><strong>S/ 289</strong></div><button class="add-button" data-product="Arc Mini">Agregar al carrito</button></article>
-        <article class="product-card" data-category="movilidad" data-name="Loop Watch"><div class="product-art art-watch"><span></span></div><div class="product-info"><div><p>Movilidad</p><h3>Loop Watch</h3></div><strong>S/ 419</strong></div><button class="add-button" data-product="Loop Watch">Agregar al carrito</button></article>
-        <article class="product-card" data-category="trabajo" data-name="Flow Mouse"><span class="product-tag tag-neutral">Edición 2026</span><div class="product-art art-mouse"><span></span></div><div class="product-info"><div><p>Trabajo</p><h3>Flow Mouse</h3></div><strong>S/ 169</strong></div><button class="add-button" data-product="Flow Mouse">Agregar al carrito</button></article>
+        <article class="product-card" data-category="audio" data-name="Pulse Pro"><span class="product-tag">Más vendido</span><div class="product-art art-headphones"><span></span></div><div class="product-info"><div><p>Audio</p><h3>Pulse Pro</h3></div><strong>S/ 549</strong></div><button class="add-button" data-product="Pulse Pro" data-price="549">Agregar al carrito</button></article>
+        <article class="product-card" data-category="trabajo" data-name="Arc Mini"><span class="product-tag tag-neutral">Nuevo</span><div class="product-art art-keyboard"><span></span></div><div class="product-info"><div><p>Trabajo</p><h3>Arc Mini</h3></div><strong>S/ 289</strong></div><button class="add-button" data-product="Arc Mini" data-price="289">Agregar al carrito</button></article>
+        <article class="product-card" data-category="movilidad" data-name="Loop Watch"><div class="product-art art-watch"><span></span></div><div class="product-info"><div><p>Movilidad</p><h3>Loop Watch</h3></div><strong>S/ 419</strong></div><button class="add-button" data-product="Loop Watch" data-price="419">Agregar al carrito</button></article>
+        <article class="product-card" data-category="trabajo" data-name="Flow Mouse"><span class="product-tag tag-neutral">Edición 2026</span><div class="product-art art-mouse"><span></span></div><div class="product-info"><div><p>Trabajo</p><h3>Flow Mouse</h3></div><strong>S/ 169</strong></div><button class="add-button" data-product="Flow Mouse" data-price="169">Agregar al carrito</button></article>
       </div>
       <p class="empty-state" id="emptyState" hidden>No encontramos productos con ese criterio.</p>
     </section>
@@ -65,8 +65,21 @@
 
   <footer><a class="brand brand-footer" href="#inicio"><span class="brand-mark">N</span><span>Nexa</span></a><p>Tecnología seleccionada para una vida en movimiento.</p><div class="status"><span id="statusDot"></span><span id="serviceStatus">Verificando servicio</span></div><small>© 2026 Nexa. Proyecto demostrativo.</small></footer>
 
+  <div class="cart-overlay" id="cartOverlay" aria-hidden="true">
+    <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" tabindex="-1">
+      <div class="cart-drawer-header"><div><p class="eyebrow">Tu selección</p><h2 id="cartTitle">Carrito <span id="cartItemLabel">(0)</span></h2></div><button class="drawer-close" id="closeCart" aria-label="Cerrar carrito">×</button></div>
+      <div class="cart-content" id="cartContent"></div>
+      <div class="cart-empty" id="cartEmpty"><div class="empty-bag" aria-hidden="true">⌑</div><h3>Tu carrito está vacío</h3><p>Encuentra algo que te acompañe todos los días.</p><button class="button button-primary" id="browseProducts">Explorar productos</button></div>
+      <div class="cart-drawer-footer" id="cartFooter" hidden>
+        <div class="cart-subtotal"><span>Subtotal</span><strong id="cartSubtotal">S/ 0</strong></div>
+        <p class="cart-shipping">Envío calculado al finalizar la compra.</p>
+        <button class="checkout-button" id="checkoutButton">Continuar comprando</button>
+        <button class="clear-cart" id="clearCart">Vaciar carrito</button>
+      </div>
+    </aside>
+  </div>
   <div class="search-panel" id="searchPanel" aria-hidden="true"><div class="search-box"><svg viewBox="0 0 24 24"><path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg><label class="sr-only" for="searchInput">Buscar</label><input id="searchInput" type="search" placeholder="Buscar en Nexa" autocomplete="off"><button id="closeSearch" aria-label="Cerrar búsqueda">×</button></div></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/js/site.js" defer></script>
+  <script src="/js/site.js?v=2" defer></script>
 </body>
 </html>
