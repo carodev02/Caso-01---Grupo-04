@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Nexa, tecnología seleccionada para el trabajo, el hogar y el movimiento.">
+  <title>Nexa · Tecnología que encaja contigo</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Nexa, inicio"><span class="brand-mark">N</span><span>Nexa</span></a>
+    <nav class="desktop-nav" aria-label="Navegación principal"><a href="#novedades">Novedades</a><a href="#catalogo">Catálogo</a><a href="#servicio">Servicio</a></nav>
+    <div class="header-actions">
+      <button class="icon-button" id="searchButton" aria-label="Buscar productos"><svg viewBox="0 0 24 24"><path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg></button>
+      <button class="cart-button" id="cartButton" aria-label="Abrir carrito"><svg viewBox="0 0 24 24"><path d="M3 3h2l2.3 10.5a2 2 0 0 0 2 1.5h7.9a2 2 0 0 0 2-1.6L20.5 7H6M9 20h.01M17 20h.01"/></svg><span>Carrito</span><span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy">
+        <p class="eyebrow">Selección Nexa 2026</p>
+        <h1>Tecnología que sigue tu ritmo</h1>
+        <p class="hero-description">Equipos precisos, diseño duradero y soporte cercano. Una colección pensada para trabajar mejor y disfrutar más.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#catalogo">Explorar colección</a><a class="text-link" href="#servicio">Conocer el servicio <span>↗</span></a></div>
+        <dl class="hero-stats"><div><dt>24 h</dt><dd>Despacho en Lima</dd></div><div><dt>12 meses</dt><dd>Garantía directa</dd></div><div><dt>4.9/5</dt><dd>Valoración promedio</dd></div></dl>
+      </div>
+      <div class="hero-visual" aria-label="Audífonos Nexa Pulse en color naranja">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <svg class="headphones" viewBox="0 0 520 520" aria-hidden="true"><defs><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb457"/><stop offset="1" stop-color="#f16a22"/></linearGradient><linearGradient id="dark" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#253348"/><stop offset="1" stop-color="#07101c"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="22" stdDeviation="18" flood-opacity=".28"/></filter></defs><g filter="url(#shadow)" transform="rotate(-12 260 260)"><path d="M132 279v-49c0-113 58-180 128-180s128 67 128 180v49" fill="none" stroke="url(#dark)" stroke-width="38" stroke-linecap="round"/><path d="M147 259v-29c0-99 48-158 113-158s113 59 113 158v29" fill="none" stroke="url(#metal)" stroke-width="16" stroke-linecap="round"/><rect x="91" y="244" width="112" height="197" rx="52" fill="url(#dark)"/><rect x="317" y="244" width="112" height="197" rx="52" fill="url(#dark)"/><rect x="112" y="270" width="69" height="145" rx="32" fill="url(#metal)"/><rect x="339" y="270" width="69" height="145" rx="32" fill="url(#metal)"/></g></svg>
+        <div class="floating-label"><span class="label-dot"></span><div><strong>Pulse Pro</strong><small>Audio espacial · 32 h</small></div></div>
+      </div>
+    </section>
+
+    <section class="marquee" aria-label="Beneficios"><span>Envío gratuito desde S/ 250</span><span>Compra protegida</span><span>Soporte especializado</span><span>Cambios simples</span></section>
+
+    <section class="section" id="novedades">
+      <div class="section-heading"><div><p class="eyebrow">Recién llegados</p><h2>Diseño que se nota. Rendimiento que permanece.</h2></div><p>Productos elegidos por su equilibrio entre desempeño, calidad de materiales y una experiencia cotidiana simple.</p></div>
+      <div class="feature-grid">
+        <article class="feature feature-large"><div class="feature-copy"><span>Trabajo híbrido</span><h3>Todo tu escritorio, más ligero</h3><a href="#catalogo">Ver productividad</a></div><div class="laptop-art" aria-hidden="true"><div class="laptop-screen"><span>NEXA</span><i></i><b></b></div><div class="laptop-base"></div></div></article>
+        <article class="feature feature-small feature-light"><div class="feature-copy"><span>Sonido personal</span><h3>Silencio cuando lo necesitas</h3><a href="#catalogo">Ver audio</a></div><div class="earbuds-art" aria-hidden="true"><i></i><b></b></div></article>
+      </div>
+    </section>
+
+    <section class="section catalog-section" id="catalogo">
+      <div class="catalog-header"><div><p class="eyebrow">Catálogo</p><h2>Esenciales seleccionados</h2></div><div class="filters" role="group" aria-label="Filtrar catálogo"><button class="filter active" data-filter="all">Todo</button><button class="filter" data-filter="audio">Audio</button><button class="filter" data-filter="movilidad">Movilidad</button><button class="filter" data-filter="trabajo">Trabajo</button></div></div>
+      <div class="product-grid" id="productGrid">
+        <article class="product-card" data-category="audio" data-name="Pulse Pro"><span class="product-tag">Más vendido</span><div class="product-art art-headphones"><span></span></div><div class="product-info"><div><p>Audio</p><h3>Pulse Pro</h3></div><strong>S/ 549</strong></div><button class="add-button" data-product="Pulse Pro">Agregar al carrito</button></article>
+        <article class="product-card" data-category="trabajo" data-name="Arc Mini"><span class="product-tag tag-neutral">Nuevo</span><div class="product-art art-keyboard"><span></span></div><div class="product-info"><div><p>Trabajo</p><h3>Arc Mini</h3></div><strong>S/ 289</strong></div><button class="add-button" data-product="Arc Mini">Agregar al carrito</button></article>
+        <article class="product-card" data-category="movilidad" data-name="Loop Watch"><div class="product-art art-watch"><span></span></div><div class="product-info"><div><p>Movilidad</p><h3>Loop Watch</h3></div><strong>S/ 419</strong></div><button class="add-button" data-product="Loop Watch">Agregar al carrito</button></article>
+        <article class="product-card" data-category="trabajo" data-name="Flow Mouse"><span class="product-tag tag-neutral">Edición 2026</span><div class="product-art art-mouse"><span></span></div><div class="product-info"><div><p>Trabajo</p><h3>Flow Mouse</h3></div><strong>S/ 169</strong></div><button class="add-button" data-product="Flow Mouse">Agregar al carrito</button></article>
+      </div>
+      <p class="empty-state" id="emptyState" hidden>No encontramos productos con ese criterio.</p>
+    </section>
+
+    <section class="service-section" id="servicio">
+      <div class="service-visual"><div class="service-ring"></div><div class="service-card"><span>Soporte Nexa</span><strong>Personas que conocen tu equipo</strong><small>Respuesta promedio: 8 min</small></div></div>
+      <div class="service-copy"><p class="eyebrow">Servicio cercano</p><h2>Tu compra continúa después de la entrega</h2><p>Te acompañamos en la configuración, resolvemos dudas de uso y gestionamos la garantía directamente, sin derivaciones innecesarias.</p><ul><li><span>01</span>Configuración inicial incluida</li><li><span>02</span>Asistencia por chat y videollamada</li><li><span>03</span>Seguimiento de garantía en línea</li></ul></div>
+    </section>
+
+    <section class="newsletter"><div><p class="eyebrow">Nexa Brief</p><h2>Novedades útiles, una vez al mes</h2></div><form id="newsletterForm"><label class="sr-only" for="email">Correo electrónico</label><input id="email" type="email" placeholder="tu@correo.com" required><button type="submit">Suscribirme</button></form></section>
+  </main>
+
+  <footer><a class="brand brand-footer" href="#inicio"><span class="brand-mark">N</span><span>Nexa</span></a><p>Tecnología seleccionada para una vida en movimiento.</p><div class="status"><span id="statusDot"></span><span id="serviceStatus">Verificando servicio</span></div><small>© 2026 Nexa. Proyecto demostrativo.</small></footer>
+
+  <div class="search-panel" id="searchPanel" aria-hidden="true"><div class="search-box"><svg viewBox="0 0 24 24"><path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg><label class="sr-only" for="searchInput">Buscar</label><input id="searchInput" type="search" placeholder="Buscar en Nexa" autocomplete="off"><button id="closeSearch" aria-label="Cerrar búsqueda">×</button></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/js/site.js" defer></script>
+</body>
+</html>
