@@ -101,7 +101,7 @@ public sealed class OrderController : Controller
         var order = new OrderConfirmationViewModel(
             orderNumber,
             DateTime.Now,
-            model.FullName,
+            $"{model.FirstName.Trim()} {model.LastName.Trim()}",
             model.Email,
             model.Phone,
             model.Address,

@@ -4,16 +4,20 @@ namespace TechStore.Web.Models;
 
 public sealed class CheckoutViewModel
 {
-    [Required(ErrorMessage = "Ingresa tu nombre completo.")]
-    [StringLength(80, MinimumLength = 3, ErrorMessage = "El nombre debe tener entre 3 y 80 caracteres.")]
-    public string FullName { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Ingresa tu nombre.")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "El nombre debe tener entre 2 y 50 caracteres.")]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Ingresa tu apellido.")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "El apellido debe tener entre 2 y 50 caracteres.")]
+    public string LastName { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Ingresa tu correo electrónico.")]
     [EmailAddress(ErrorMessage = "Ingresa un correo electrónico válido.")]
     public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Ingresa tu celular.")]
-    [RegularExpression(@"^9\d{8}$", ErrorMessage = "El celular debe tener 9 dígitos y comenzar con 9.")]
+    [RegularExpression(@"^\d{9}$", ErrorMessage = "El celular debe contener exactamente 9 dígitos.")]
     public string Phone { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Ingresa la dirección de entrega.")]

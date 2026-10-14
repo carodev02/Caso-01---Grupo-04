@@ -27,9 +27,9 @@ dotnet run --project src/TechStore.Web --urls http://localhost:5080
 
 ## Catálogo y compra
 
-El catálogo carga doce productos en memoria repartidos en **Audio**, **Movilidad** y **Trabajo**, con filtros Todo/Audio/Movilidad/Trabajo. El carrito persiste en el navegador durante la demostración.
+El catálogo carga quince productos en memoria, cinco por categoría (**Audio**, **Movilidad** y **Trabajo**), con filtros Todo/Audio/Movilidad/Trabajo. El carrito persiste en el navegador durante la demostración.
 
-Al finalizar la compra, el checkout valida en servidor nombre, correo, celular peruano, dirección, distrito, método de pago y contenido del carrito. El servidor verifica que cada producto exista, limita cantidades a diez y vuelve a calcular los precios desde el catálogo; no confía en los importes enviados por el navegador. Muestra errores por campo y, si todo es válido, crea una confirmación de pedido en memoria.
+Al finalizar la compra, el checkout valida en servidor nombre, apellido, correo, celular de nueve dígitos, dirección, distrito, método de pago y contenido del carrito. El servidor verifica que cada producto exista, limita cantidades a diez y vuelve a calcular los precios desde el catálogo; no confía en los importes enviados por el navegador. Muestra errores por campo y, si todo es válido, crea una confirmación de pedido en memoria.
 
 El envío cuesta S/ 12 y es gratis desde S/ 250. Las opciones de pago son simuladas; no se almacenan datos de tarjetas ni se realizan transacciones. Los pedidos en memoria se pierden al reiniciar la aplicación.
 

@@ -6,6 +6,7 @@ const checkoutTotals = document.querySelector('#checkoutTotals');
 const checkoutSubtotal = document.querySelector('#checkoutSubtotal');
 const checkoutShipping = document.querySelector('#checkoutShipping');
 const checkoutTotal = document.querySelector('#checkoutTotal');
+const phoneInput = document.querySelector('#Phone');
 const productCatalog = new Map(
   JSON.parse(document.querySelector('#nexaCatalog').textContent)
     .map(product => [product.name, product])
@@ -77,6 +78,10 @@ function renderCheckout() {
 
 checkoutForm.addEventListener('submit', () => {
   cartJsonInput.value = JSON.stringify(readCart());
+});
+
+phoneInput.addEventListener('input', () => {
+  phoneInput.value = phoneInput.value.replace(/\D/g, '').slice(0, 9);
 });
 
 window.addEventListener('storage', event => {
