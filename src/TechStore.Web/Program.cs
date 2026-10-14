@@ -1,8 +1,10 @@
 using TechStore.Web.Extensions;
+using TechStore.Web.Services;
 using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<InMemoryOrderStore>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 

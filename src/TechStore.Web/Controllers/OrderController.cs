@@ -1,7 +1,7 @@
-using System.Collections.Concurrent;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.Web.Models;
+using TechStore.Web.Services;
 
 namespace TechStore.Web.Controllers;
 
@@ -15,7 +15,12 @@ public sealed class OrderController : Controller
         "La Molina", "Barranco", "Jesús María", "Lince", "Pueblo Libre", "Otro distrito de Lima"
     ];
     private static readonly JsonSerializerOptions CartJsonOptions = new(JsonSerializerDefaults.Web);
-    private static readonly ConcurrentDictionary<string, OrderConfirmationViewModel> Orders = new();
+    private readonly InMemoryOrderStore _orderStore;
+
+    public OrderController(InMemoryOrderStore orderStore)
+    {
+        _orderStore = orderStore;
+    }
 
     [HttpGet]
     public IActionResult Checkout() => View(new CheckoutViewModel());
@@ -112,14 +117,14 @@ public sealed class OrderController : Controller
             shipping,
             subtotal + shipping);
 
-        Orders[orderNumber] = order;
+        _orderStore.Add(order);
         return RedirectToAction(nameof(Confirmation), new { id = orderNumber });
     }
 
     [HttpGet]
     public IActionResult Confirmation(string id)
     {
-        if (string.IsNullOrWhiteSpace(id) || !Orders.TryGetValue(id, out var order))
+        if (string.IsNullOrWhiteSpace(id) || !_orderStore.TryGet(id, out var order) || order is null)
         {
             return NotFound("No encontramos ese pedido.");
         }

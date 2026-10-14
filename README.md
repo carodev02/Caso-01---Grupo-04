@@ -21,6 +21,7 @@ dotnet run --project src/TechStore.Web --urls http://localhost:5080
 | `/` | `HomeController` entrega el catálogo a `Views/Home/Index.cshtml` |
 | `/admin` | Panel de `AdminController`; sin clave devuelve 403 |
 | `/admin?clave=nexa-2026` | Panel de administración de demostración |
+| `/admin/orders?clave=nexa-2026` | Historial en memoria de pedidos confirmados |
 | `/estado` | Rama terminal `app.Map` responde `Nexa está operativo` |
 | `/Order/Checkout` | Formulario de compra con resumen y validación |
 | `/ruta-inexistente` | Respuesta 404 |
@@ -31,15 +32,19 @@ El catálogo carga quince productos en memoria, cinco por categoría (**Audio**,
 
 Al finalizar la compra, el checkout valida en servidor nombre, apellido, correo, celular de nueve dígitos, dirección, distrito, método de pago y contenido del carrito. El servidor verifica que cada producto exista, limita cantidades a diez y vuelve a calcular los precios desde el catálogo; no confía en los importes enviados por el navegador. Muestra errores por campo y, si todo es válido, crea una confirmación de pedido en memoria.
 
-El envío cuesta S/ 12 y es gratis desde S/ 250. Las opciones de pago son simuladas; no se almacenan datos de tarjetas ni se realizan transacciones. Los pedidos en memoria se pierden al reiniciar la aplicación.
+El envío cuesta S/ 12 y es gratis desde S/ 250. Las opciones de pago son simuladas; no se almacenan datos de tarjetas ni se realizan transacciones. Los pedidos confirmados aparecen en **Administración > Pedidos registrados** y se pierden al reiniciar la aplicación.
+
+El resumen administrativo calcula ventas del día, total de pedidos y ventas de los últimos siete días a partir de pedidos confirmados. El número de productos corresponde al catálogo; no hay control de inventario.
 
 ## Estructura MVC y middleware
 
 - `Controllers/HomeController.cs`: obtiene la lista en memoria para la tienda.
-- `Controllers/AdminController.cs`: presenta la vista administrativa.
+- `Controllers/AdminController.cs`: presenta el panel y el historial administrativo de pedidos.
 - `Controllers/OrderController.cs`: valida y registra pedidos en memoria.
+- `Services/InMemoryOrderStore.cs`: almacena temporalmente los pedidos confirmados durante la ejecución.
 - `Models/Product.cs` y `Models/ProductCatalog.cs`: catálogo en memoria.
 - `Models/CheckoutViewModel.cs`: reglas de validación y modelos del checkout.
+- `Models/AdminDashboardViewModel.cs`: valores reales que se presentan en el resumen y el gráfico semanal.
 - `Views/Order/Checkout.cshtml` y `Views/Order/Confirmation.cshtml`: compra y confirmación.
 - `Views/Home/Index.cshtml` y `Views/Admin/Index.cshtml`: vistas Razor.
 - `Middleware/RequestLogMiddleware.cs`: registra método, ruta, estado y duración con `ILogger` y `Stopwatch`.

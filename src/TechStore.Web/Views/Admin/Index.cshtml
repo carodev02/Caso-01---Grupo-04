@@ -1,8 +1,33 @@
+@model AdminDashboardViewModel
+@{
+    var accessKey = Uri.EscapeDataString(Model.AccessKey);
+    var moneyCulture = System.Globalization.CultureInfo.GetCultureInfo("es-PE");
+}
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Panel Nexa</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/css/admin.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Panel Nexa</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/css/admin.css"><link rel="stylesheet" href="/css/dashboard.css"></head>
 <body>
-  <aside><a class="admin-brand" href="/"><span>N</span>Nexa</a><nav><a class="active" href="#">Resumen</a><a href="#">Pedidos</a><a href="#">Inventario</a><a href="#">Clientes</a></nav><div class="profile"><div>XM</div><span><strong>Administración</strong><small>Sesión protegida</small></span></div></aside>
-  <main><header><div><p>14 de octubre de 2026</p><h1>Resumen de la tienda</h1></div><span class="secure">Acceso verificado</span></header><section class="metrics"><article><span>Ventas de hoy</span><strong>S/ 8,420</strong><small>12 pedidos completados</small></article><article><span>Pedidos activos</span><strong>28</strong><small>5 listos para despacho</small></article><article><span>Inventario</span><strong>94%</strong><small>3 productos por reponer</small></article></section><section class="panel"><div class="panel-heading"><div><span>Actividad comercial</span><h2>Ventas de la semana</h2></div><strong>S/ 42,680</strong></div><div class="chart" aria-label="Gráfico demostrativo de ventas semanales"><i style="--h:42%"><b>Lun</b></i><i style="--h:58%"><b>Mar</b></i><i style="--h:48%"><b>Mié</b></i><i style="--h:76%"><b>Jue</b></i><i style="--h:66%"><b>Vie</b></i><i style="--h:92%"><b>Sáb</b></i><i style="--h:72%"><b>Dom</b></i></div></section></main>
+  <aside><a class="admin-brand" href="/"><span>N</span>Nexa</a><nav><a class="active" href="/admin?clave=@accessKey">Resumen</a><a href="/admin/orders?clave=@accessKey">Pedidos registrados</a><a href="#">Inventario</a></nav><div class="profile"><div>XM</div><span><strong>Administración</strong><small>Sesión protegida</small></span></div></aside>
+  <main>
+    <header><div><p>@DateTime.Today.ToString("dd 'de' MMMM 'de' yyyy", moneyCulture)</p><h1>Resumen de la tienda</h1></div><span class="secure">Acceso verificado</span></header>
+    <section class="metrics">
+      <article><span>Ventas de hoy</span><strong>@Model.SalesToday.ToString("C0", moneyCulture)</strong><small>Según pedidos confirmados hoy</small></article>
+      <article><span>Pedidos registrados</span><strong>@Model.OrderCount</strong><small>Total de pedidos confirmados</small></article>
+      <article><span>Productos en catálogo</span><strong>@Model.ProductCount</strong><small>No se controla stock en este proyecto</small></article>
+    </section>
+    <section class="panel">
+      <div class="panel-heading"><div><span>Actividad real</span><h2>Ventas de los últimos 7 días</h2></div><strong>@Model.WeeklySales.ToString("C0", moneyCulture)</strong></div>
+      @if (Model.WeeklySales == 0)
+      {
+        <p class="no-sales">Aún no hay pedidos confirmados en los últimos siete días.</p>
+      }
+      <div class="chart" aria-label="Ventas por día de los últimos siete días">
+        @foreach (var day in Model.WeeklySalesByDay)
+        {
+          <i class="@(day.IsToday ? "is-today" : string.Empty)" style="--h:@(day.HeightPercent)%" title="@day.Label: @day.Total.ToString("C0", moneyCulture)"><b>@day.Label</b></i>
+        }
+      </div>
+    </section>
+  </main>
 </body>
 </html>

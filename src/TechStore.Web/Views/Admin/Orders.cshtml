@@ -1,0 +1,67 @@
+@model AdminOrdersViewModel
+@{
+    var accessKey = Uri.EscapeDataString(Model.AccessKey);
+    var totalSales = Model.Orders.Sum(order => order.Total);
+}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pedidos registrados · Nexa</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/orders.css">
+</head>
+<body>
+  <aside>
+    <a class="admin-brand" href="/"><span>N</span>Nexa</a>
+    <nav>
+      <a href="/admin?clave=@accessKey">Resumen</a>
+      <a class="active" href="/admin/orders?clave=@accessKey">Pedidos registrados</a>
+      <a href="#">Inventario</a>
+    </nav>
+    <div class="profile"><div>XM</div><span><strong>Administración</strong><small>Sesión protegida</small></span></div>
+  </aside>
+  <main>
+    <header class="orders-header">
+      <div><p>Administración · Ventas</p><h1>Pedidos registrados</h1><span class="orders-subtitle">Consulta las compras confirmadas en esta sesión.</span></div>
+      <a class="secure" href="/admin?clave=@accessKey">← Volver al resumen</a>
+    </header>
+    <section class="metrics">
+      <article><span>Pedidos registrados</span><strong>@Model.Orders.Count</strong><small>Desde que inició la aplicación</small></article>
+      <article><span>Importe total</span><strong>@totalSales.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("es-PE"))</strong><small>Incluye envío</small></article>
+      <article><span>Almacenamiento</span><strong>En memoria</strong><small>Se reinicia al detener la aplicación</small></article>
+    </section>
+    <section class="orders-panel">
+      @if (Model.Orders.Count == 0)
+      {
+        <div class="orders-empty"><span class="empty-icon">⌑</span><h2>Aún no hay pedidos</h2><p>Cuando un cliente confirme una compra, aparecerá aquí con sus productos y datos de entrega.</p><a href="/" class="orders-cta">Ir a la tienda</a></div>
+      }
+      else
+      {
+        <div class="orders-panel-heading"><div><span>Actividad reciente</span><h2>Compras confirmadas</h2></div><span class="order-count">@Model.Orders.Count pedido(s)</span></div>
+        <div class="orders-table-wrap">
+          <table>
+            <thead><tr><th>Pedido</th><th>Cliente</th><th>Entrega</th><th>Productos</th><th>Pago</th><th>Total</th></tr></thead>
+            <tbody>
+              @foreach (var order in Model.Orders)
+              {
+                <tr>
+                  <td><strong class="order-id">@order.OrderNumber</strong><small>@order.CreatedAt.ToString("dd/MM/yyyy · HH:mm")</small></td>
+                  <td><strong>@order.FullName</strong><small>@order.Email</small><small>@order.Phone</small></td>
+                  <td><strong>@order.District</strong><small>@order.Address</small></td>
+                  <td><div class="order-products">@foreach (var item in order.Items){<span>@item.Name <b>× @item.Quantity</b></span>}</div></td>
+                  <td><span class="payment-chip">@order.PaymentMethod</span></td>
+                  <td class="order-total"><strong>@order.Total.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("es-PE"))</strong><small>Envío: @(order.Shipping == 0 ? "Gratis" : order.Shipping.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("es-PE")))</small></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <p class="memory-note">Los datos se guardan temporalmente en memoria para esta demostración. Al detener o reiniciar el servidor, se borrarán.</p>
+      }
+    </section>
+  </main>
+</body>
+</html>
