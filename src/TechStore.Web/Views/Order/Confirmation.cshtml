@@ -1,0 +1,39 @@
+@model OrderConfirmationViewModel
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pedido confirmado · Nexa</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/checkout.css">
+</head>
+<body>
+  <header class="checkout-header"><a class="brand" href="/"><span class="brand-mark">N</span><span>Nexa</span></a><span class="secure-note"><span>✓</span> Pedido registrado</span></header>
+  <main class="confirmation-shell">
+    <section class="confirmation-card">
+      <div class="success-mark" aria-hidden="true">✓</div>
+      <p class="eyebrow">Gracias por elegir Nexa</p>
+      <h1>¡Tu pedido está confirmado!</h1>
+      <p class="confirmation-copy">Enviamos el resumen a <strong>@Model.Email</strong>. Esta demostración registra pedidos en memoria y no realiza cobros.</p>
+      <div class="order-number"><span>Número de pedido</span><strong>@Model.OrderNumber</strong><small>@Model.CreatedAt.ToString("dd/MM/yyyy · HH:mm")</small></div>
+      <div class="confirmation-details">
+        <div><span>Entrega para</span><strong>@Model.FullName</strong><small>@Model.Address, @Model.District</small><small>@Model.Phone</small></div>
+        <div><span>Método de pago</span><strong>@Model.PaymentMethod</strong><small>Pago simulado · sin transacción bancaria</small></div>
+      </div>
+      <div class="confirmation-lines">
+        @foreach (var item in Model.Items)
+        {
+          <div><span>@item.Name × @item.Quantity</span><strong>@item.Total.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("es-PE"))</strong></div>
+        }
+      </div>
+      <div class="confirmation-total"><span>Subtotal</span><strong>@Model.Subtotal.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("es-PE"))</strong></div>
+      <div class="confirmation-total"><span>Envío</span><strong>@(Model.Shipping == 0 ? "Gratis" : Model.Shipping.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("es-PE")))</strong></div>
+      <div class="confirmation-total grand-total"><span>Total del pedido</span><strong>@Model.Total.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("es-PE"))</strong></div>
+      <a class="place-order return-home" href="/">Volver a la tienda <span>→</span></a>
+    </section>
+  </main>
+  <footer class="checkout-footer">Nexa · Tecnología seleccionada para una vida en movimiento</footer>
+  <script>try { localStorage.removeItem('nexa-cart'); } catch { }</script>
+</body>
+</html>

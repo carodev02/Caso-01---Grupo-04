@@ -1,16 +1,28 @@
 using TechStore.Web.Extensions;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+builder.Services.AddControllersWithViews();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
+// En desarrollo no se reutilizan claves locales incompatibles de Data Protection.
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
+}
+
+var app = builder.Build();
 var logAfterStaticFiles = builder.Configuration.GetValue<bool>("RequestLogging:AfterStaticFiles");
 var adminKey = builder.Configuration["AdminAccess:Key"] ?? "nexa-2026";
 
+// Al colocar el logger aquí, también registra los archivos estáticos.
 if (!logAfterStaticFiles)
 {
     app.UseRequestLog();
 }
 
+// Middleware de demostración: sin clave, responde 403 y corta la canalización.
 app.Use(async (context, next) =>
 {
     if (context.Request.Path.StartsWithSegments("/admin") &&
@@ -25,9 +37,9 @@ app.Use(async (context, next) =>
     await next(context);
 });
 
-app.UseDefaultFiles();
 app.UseStaticFiles();
 
+// Alternativa para comparar qué ocurre al ubicar el logger tras StaticFiles.
 if (logAfterStaticFiles)
 {
     app.UseRequestLog();
@@ -42,17 +54,17 @@ app.Map("/estado", statusApp =>
     });
 });
 
-app.Map("/admin", adminApp =>
-{
-    adminApp.Run(async context =>
-    {
-        context.Response.ContentType = "text/html; charset=utf-8";
-        await context.Response.SendFileAsync(
-            Path.Combine(app.Environment.WebRootPath, "admin.html"));
-    });
-});
+app.UseRouting();
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "admin/{action=Index}/{id?}",
+    defaults: new { controller = "Admin" });
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run(async context =>
+// Fallback para solicitudes que no coinciden con una ruta MVC.
+app.MapFallback(async context =>
 {
     context.Response.StatusCode = StatusCodes.Status404NotFound;
     context.Response.ContentType = "text/plain; charset=utf-8";

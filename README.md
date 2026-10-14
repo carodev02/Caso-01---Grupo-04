@@ -1,80 +1,61 @@
-# Nexa · Auditoría y protección con middleware
+# Nexa Tech Store · Caso 1
 
-Nexa es una tienda tecnológica demostrativa desarrollada con ASP.NET Core 8. El proyecto usa una interfaz comercial completa para mostrar, en un contexto realista, cómo una canalización de middleware registra solicitudes, protege una zona administrativa y atiende una ruta terminal.
+Aplicación **ASP.NET Core Web App (Model-View-Controller)** para demostrar middleware personalizados en el contexto de una tienda tecnológica. La interfaz pública y el panel son vistas Razor; el catálogo se entrega desde un modelo en memoria y no requiere base de datos.
 
-## Requisitos
+## Abrir y ejecutar en Visual Studio
 
-- .NET SDK 8 o superior.
-- Navegador web moderno.
+1. Abrir `TechStore.slnx` con Visual Studio 2022 17.12 o Visual Studio 2026.
+2. Seleccionar el perfil **http** y ejecutar con **F5** o **Ctrl+F5**.
+3. La aplicación queda disponible en `http://localhost:5291`.
 
-## Ejecución
-
-Desde la carpeta raíz:
+También se puede ejecutar desde la raíz del repositorio:
 
 ```powershell
 dotnet run --project src/TechStore.Web --urls http://localhost:5080
 ```
 
-Abrir `http://localhost:5080`.
+## Rutas de demostración
 
-## Rutas para la demostración
-
-| Ruta | Resultado esperado |
+| Ruta | Resultado |
 | --- | --- |
-| `/` | Tienda Nexa y archivos estáticos |
-| `/estado` | Respuesta terminal: `Nexa está operativo` |
-| `/admin` | `403 Forbidden` porque no incluye la clave |
-| `/admin?clave=nexa-2026` | Panel administrativo protegido |
-| `/ruta-inexistente` | `404 Not Found` |
+| `/` | `HomeController` entrega el catálogo a `Views/Home/Index.cshtml` |
+| `/admin` | Panel de `AdminController`; sin clave devuelve 403 |
+| `/admin?clave=nexa-2026` | Panel de administración de demostración |
+| `/estado` | Rama terminal `app.Map` responde `Nexa está operativo` |
+| `/Order/Checkout` | Formulario de compra con resumen y validación |
+| `/ruta-inexistente` | Respuesta 404 |
 
-## Componentes del caso
+## Catálogo y compra
 
-- `Middleware/RequestLogMiddleware.cs`: mide la duración con `Stopwatch` y registra método, ruta, estado HTTP y milisegundos mediante `ILogger`.
-- `Extensions/RequestLogMiddlewareExtensions.cs`: expone el método `UseRequestLog()`.
-- `Program.cs`: configura la canalización, el cortocircuito para `/admin`, la ruta terminal `/estado` y el orden respecto a los archivos estáticos.
-- `wwwroot/`: contiene la tienda pública, el panel administrativo y los recursos visuales.
+El catálogo carga doce productos en memoria repartidos en **Audio**, **Movilidad** y **Trabajo**, con filtros Todo/Audio/Movilidad/Trabajo. El carrito persiste en el navegador durante la demostración.
 
-## Demostración del orden
+Al finalizar la compra, el checkout valida en servidor nombre, correo, celular peruano, dirección, distrito, método de pago y contenido del carrito. El servidor verifica que cada producto exista, limita cantidades a diez y vuelve a calcular los precios desde el catálogo; no confía en los importes enviados por el navegador. Muestra errores por campo y, si todo es válido, crea una confirmación de pedido en memoria.
 
-La propiedad `RequestLogging:AfterStaticFiles` de `appsettings.json` controla la ubicación efectiva del registro sin tener que alterar otras partes del proyecto.
+El envío cuesta S/ 12 y es gratis desde S/ 250. Las opciones de pago son simuladas; no se almacenan datos de tarjetas ni se realizan transacciones. Los pedidos en memoria se pierden al reiniciar la aplicación.
 
-### Registro antes de los archivos estáticos
+## Estructura MVC y middleware
 
-Mantener:
+- `Controllers/HomeController.cs`: obtiene la lista en memoria para la tienda.
+- `Controllers/AdminController.cs`: presenta la vista administrativa.
+- `Controllers/OrderController.cs`: valida y registra pedidos en memoria.
+- `Models/Product.cs` y `Models/ProductCatalog.cs`: catálogo en memoria.
+- `Models/CheckoutViewModel.cs`: reglas de validación y modelos del checkout.
+- `Views/Order/Checkout.cshtml` y `Views/Order/Confirmation.cshtml`: compra y confirmación.
+- `Views/Home/Index.cshtml` y `Views/Admin/Index.cshtml`: vistas Razor.
+- `Middleware/RequestLogMiddleware.cs`: registra método, ruta, estado y duración con `ILogger` y `Stopwatch`.
+- `Extensions/RequestLogMiddlewareExtensions.cs`: registra el componente mediante `UseRequestLog()`.
+- `Program.cs`: configura MVC, el cortocircuito de `/admin`, archivos estáticos, `/estado` y las rutas MVC.
+- `wwwroot/`: CSS, JavaScript e icono estáticos; la interfaz HTML ya no se sirve directamente desde esta carpeta.
 
-```json
-"RequestLogging": {
-  "AfterStaticFiles": false
-}
-```
+## Comparación del orden del logger
 
-Al recargar la tienda, la consola registra `/`, `/css/site.css`, `/js/site.js`, `/favicon.svg` y `/estado`. `UseRequestLog()` entra antes de `UseStaticFiles()` y observa todas esas solicitudes.
+En `appsettings.json`, `RequestLogging:AfterStaticFiles` controla la demostración:
 
-### Registro después de los archivos estáticos
+- `false`: el logger está antes de `UseStaticFiles()` y también registra CSS, JavaScript e iconos.
+- `true`: el logger queda después de `UseStaticFiles()`; los archivos estáticos servidos antes no aparecen en esos registros.
 
-Cambiar el valor a `true` y reiniciar la aplicación. Los recursos atendidos por `UseStaticFiles()` terminan la canalización antes de llegar al middleware de auditoría. La consola continúa registrando rutas dinámicas como `/estado`, `/admin` y las respuestas 404.
+Reiniciar la aplicación después de modificar la propiedad. En ambas posiciones, una solicitud bloqueada por el control de `/admin` puede no llegar al logger cuando este middleware está después del control de acceso.
 
-## Flujo principal
+## Seguridad
 
-```text
-Solicitud
-   │
-   ├─ RequestLogMiddleware
-   │      inicia Stopwatch
-   │
-   ├─ Protección /admin
-   │      sin clave: 403 y cortocircuito
-   │      con clave: continúa
-   │
-   ├─ Archivos estáticos
-   │
-   ├─ /estado o /admin
-   │
-   └─ Respuesta 404
-          │
-          └─ RequestLogMiddleware registra estado y tiempo
-```
-
-## Nota de seguridad
-
-La clave incluida en `appsettings.json` sirve únicamente para una demostración académica. En una aplicación real se usarían autenticación, autorización por roles y almacenamiento seguro de secretos.
+La clave `nexa-2026` es únicamente didáctica y se lee desde configuración. El control por query string no sustituye autenticación y autorización reales; no debe usarse en producción.

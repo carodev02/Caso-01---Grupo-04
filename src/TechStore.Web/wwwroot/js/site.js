@@ -12,12 +12,14 @@ const cartEmpty = document.querySelector('#cartEmpty');
 const cartFooter = document.querySelector('#cartFooter');
 const cartSubtotal = document.querySelector('#cartSubtotal');
 const cartItemLabel = document.querySelector('#cartItemLabel');
-const cartProducts = new Map([
-  ['Pulse Pro', 549],
-  ['Arc Mini', 289],
-  ['Loop Watch', 419],
-  ['Flow Mouse', 169]
-]);
+const cartProducts = new Map([...products].map(product => {
+  const button = product.querySelector('.add-button');
+  return [product.dataset.name, Number(button.dataset.price)];
+}));
+const productArtClasses = new Map([...products].map(product => [
+  product.dataset.name,
+  product.querySelector('.product-art').classList[1]
+]));
 const money = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN', maximumFractionDigits: 0 });
 let cart = loadCart();
 let toastTimer;
@@ -111,17 +113,16 @@ function renderCart() {
 }
 
 function getProductArtClass(name) {
-  return {
-    'Pulse Pro': 'art-headphones',
-    'Arc Mini': 'art-keyboard',
-    'Loop Watch': 'art-watch',
-    'Flow Mouse': 'art-mouse'
-  }[name];
+  return productArtClasses.get(name);
 }
 
 function updateCart(name, action) {
   const quantity = cart[name] || 0;
 
+  if (action === 'increase' && quantity >= 10) {
+    showToast('Puedes agregar hasta 10 unidades por producto');
+    return;
+  }
   if (action === 'increase') cart[name] = quantity + 1;
   if (action === 'decrease' && quantity > 1) cart[name] = quantity - 1;
   if (action === 'decrease' || action === 'remove') {
@@ -199,8 +200,7 @@ document.querySelector('#clearCart').addEventListener('click', () => {
   renderCart();
 });
 document.querySelector('#checkoutButton').addEventListener('click', () => {
-  closeCart();
-  document.querySelector('#catalogo').scrollIntoView({ behavior: 'smooth' });
+  window.location.assign('/Order/Checkout');
 });
 document.querySelector('#browseProducts').addEventListener('click', () => {
   closeCart();

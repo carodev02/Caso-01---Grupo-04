@@ -1,12 +1,13 @@
+@model IReadOnlyList<TechStore.Web.Models.Product>
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Nexa, tecnología seleccionada para el trabajo, el hogar y el movimiento.">
-  <title>Nexa · Tecnología que encaja contigo</title>
+<title>Nexa · Tecnología que encaja contigo</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/css/site.css?v=2">
+  <link rel="stylesheet" href="/css/site.css?v=3">
 </head>
 <body>
   <header class="site-header">
@@ -47,10 +48,18 @@
     <section class="section catalog-section" id="catalogo">
       <div class="catalog-header"><div><p class="eyebrow">Catálogo</p><h2>Esenciales seleccionados</h2></div><div class="filters" role="group" aria-label="Filtrar catálogo"><button class="filter active" data-filter="all">Todo</button><button class="filter" data-filter="audio">Audio</button><button class="filter" data-filter="movilidad">Movilidad</button><button class="filter" data-filter="trabajo">Trabajo</button></div></div>
       <div class="product-grid" id="productGrid">
-        <article class="product-card" data-category="audio" data-name="Pulse Pro"><span class="product-tag">Más vendido</span><div class="product-art art-headphones"><span></span></div><div class="product-info"><div><p>Audio</p><h3>Pulse Pro</h3></div><strong>S/ 549</strong></div><button class="add-button" data-product="Pulse Pro" data-price="549">Agregar al carrito</button></article>
-        <article class="product-card" data-category="trabajo" data-name="Arc Mini"><span class="product-tag tag-neutral">Nuevo</span><div class="product-art art-keyboard"><span></span></div><div class="product-info"><div><p>Trabajo</p><h3>Arc Mini</h3></div><strong>S/ 289</strong></div><button class="add-button" data-product="Arc Mini" data-price="289">Agregar al carrito</button></article>
-        <article class="product-card" data-category="movilidad" data-name="Loop Watch"><div class="product-art art-watch"><span></span></div><div class="product-info"><div><p>Movilidad</p><h3>Loop Watch</h3></div><strong>S/ 419</strong></div><button class="add-button" data-product="Loop Watch" data-price="419">Agregar al carrito</button></article>
-        <article class="product-card" data-category="trabajo" data-name="Flow Mouse"><span class="product-tag tag-neutral">Edición 2026</span><div class="product-art art-mouse"><span></span></div><div class="product-info"><div><p>Trabajo</p><h3>Flow Mouse</h3></div><strong>S/ 169</strong></div><button class="add-button" data-product="Flow Mouse" data-price="169">Agregar al carrito</button></article>
+        @foreach (var product in Model)
+        {
+          <article class="product-card" data-category="@product.Category" data-name="@product.Name">
+            @if (!string.IsNullOrWhiteSpace(product.Tag))
+            {
+              <span class="product-tag @(product.Tag == "Más vendido" ? "" : "tag-neutral")">@product.Tag</span>
+            }
+            <div class="product-art @product.ArtClass"><span></span></div>
+            <div class="product-info"><div><p>@product.CategoryLabel</p><h3>@product.Name</h3></div><strong>S/ @product.Price.ToString("N0")</strong></div>
+            <button class="add-button" data-product="@product.Name" data-price="@product.Price">Agregar al carrito</button>
+          </article>
+        }
       </div>
       <p class="empty-state" id="emptyState" hidden>No encontramos productos con ese criterio.</p>
     </section>
@@ -60,7 +69,7 @@
       <div class="service-copy"><p class="eyebrow">Servicio cercano</p><h2>Tu compra continúa después de la entrega</h2><p>Te acompañamos en la configuración, resolvemos dudas de uso y gestionamos la garantía directamente, sin derivaciones innecesarias.</p><ul><li><span>01</span>Configuración inicial incluida</li><li><span>02</span>Asistencia por chat y videollamada</li><li><span>03</span>Seguimiento de garantía en línea</li></ul></div>
     </section>
 
-    <section class="newsletter"><div><p class="eyebrow">Nexa Brief</p><h2>Novedades útiles, una vez al mes</h2></div><form id="newsletterForm"><label class="sr-only" for="email">Correo electrónico</label><input id="email" type="email" placeholder="tu@correo.com" required><button type="submit">Suscribirme</button></form></section>
+    <section class="newsletter"><div><p class="eyebrow">Nexa Brief</p><h2>Novedades útiles, una vez al mes</h2></div><form id="newsletterForm"><label class="sr-only" for="email">Correo electrónico</label><input id="email" type="email" placeholder="tu@@correo.com" required><button type="submit">Suscribirme</button></form></section>
   </main>
 
   <footer><a class="brand brand-footer" href="#inicio"><span class="brand-mark">N</span><span>Nexa</span></a><p>Tecnología seleccionada para una vida en movimiento.</p><div class="status"><span id="statusDot"></span><span id="serviceStatus">Verificando servicio</span></div><small>© 2026 Nexa. Proyecto demostrativo.</small></footer>
@@ -73,13 +82,13 @@
       <div class="cart-drawer-footer" id="cartFooter" hidden>
         <div class="cart-subtotal"><span>Subtotal</span><strong id="cartSubtotal">S/ 0</strong></div>
         <p class="cart-shipping">Envío calculado al finalizar la compra.</p>
-        <button class="checkout-button" id="checkoutButton">Continuar comprando</button>
+        <button class="checkout-button" id="checkoutButton">Finalizar compra</button>
         <button class="clear-cart" id="clearCart">Vaciar carrito</button>
       </div>
     </aside>
   </div>
   <div class="search-panel" id="searchPanel" aria-hidden="true"><div class="search-box"><svg viewBox="0 0 24 24"><path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg><label class="sr-only" for="searchInput">Buscar</label><input id="searchInput" type="search" placeholder="Buscar en Nexa" autocomplete="off"><button id="closeSearch" aria-label="Cerrar búsqueda">×</button></div></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/js/site.js?v=2" defer></script>
+  <script src="/js/site.js?v=3" defer></script>
 </body>
 </html>

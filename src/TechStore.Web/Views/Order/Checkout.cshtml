@@ -1,0 +1,70 @@
+@model CheckoutViewModel
+@using System.Text.Json
+@{
+    var catalogJson = JsonSerializer.Serialize(ProductCatalog.All, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finalizar compra · Nexa</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/checkout.css">
+</head>
+<body>
+  <header class="checkout-header">
+    <a class="brand" href="/"><span class="brand-mark">N</span><span>Nexa</span></a>
+    <span class="secure-note"><span>✓</span> Compra protegida</span>
+  </header>
+  <main class="checkout-shell">
+    <div class="checkout-heading">
+      <a class="back-link" href="/#catalogo">← Volver a la tienda</a>
+      <p class="eyebrow">Unos pasos más</p>
+      <h1>Finaliza tu compra</h1>
+      <div class="progress" aria-label="Pasos de compra"><span class="current">1 <b>Entrega y pago</b></span><i></i><span>2 <b>Confirmación</b></span></div>
+    </div>
+
+    <div class="checkout-grid">
+      <section class="checkout-card">
+        <div class="card-heading"><span class="step-number">01</span><div><h2>Datos de entrega</h2><p>Usaremos estos datos para coordinar tu pedido.</p></div></div>
+        <form asp-controller="Order" asp-action="Checkout" method="post" id="checkoutForm">
+          @Html.AntiForgeryToken()
+          <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+          <div class="field-grid">
+            <div class="field field-full"><label asp-for="FullName">Nombre completo <span>*</span></label><input asp-for="FullName" autocomplete="name" placeholder="Ej. Ximena Ramírez" required maxlength="80"><span asp-validation-for="FullName" class="field-error"></span></div>
+            <div class="field"><label asp-for="Email">Correo electrónico <span>*</span></label><input asp-for="Email" type="email" autocomplete="email" placeholder="tu@correo.com" required><span asp-validation-for="Email" class="field-error"></span></div>
+            <div class="field"><label asp-for="Phone">Celular <span>*</span></label><input asp-for="Phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="987654321" pattern="9[0-9]{8}" maxlength="9" required><span asp-validation-for="Phone" class="field-error"></span></div>
+            <div class="field field-full"><label asp-for="Address">Dirección <span>*</span></label><input asp-for="Address" autocomplete="street-address" placeholder="Av. Arequipa 123, dpto. 402" required minlength="8" maxlength="160"><span asp-validation-for="Address" class="field-error"></span></div>
+            <div class="field field-full"><label asp-for="District">Distrito <span>*</span></label><select asp-for="District" required><option value="">Selecciona tu distrito</option><option>Cercado de Lima</option><option>Miraflores</option><option>San Isidro</option><option>Surco</option><option>San Borja</option><option>La Molina</option><option>Barranco</option><option>Jesús María</option><option>Lince</option><option>Pueblo Libre</option><option>Otro distrito de Lima</option></select><span asp-validation-for="District" class="field-error"></span></div>
+          </div>
+
+          <div class="card-heading payment-heading"><span class="step-number">02</span><div><h2>Método de pago</h2><p>Elige cómo deseas completar tu pedido.</p></div></div>
+          <div class="field field-full"><label asp-for="PaymentMethod">Forma de pago <span>*</span></label><select asp-for="PaymentMethod" required><option value="">Selecciona una opción</option><option value="Tarjeta">Tarjeta (simulación)</option><option value="Transferencia">Transferencia bancaria</option><option value="Contraentrega">Pago contraentrega</option></select><span asp-validation-for="PaymentMethod" class="field-error"></span></div>
+
+          <input type="hidden" id="cartJson" name="CartJson" value="@Model.CartJson">
+          <span asp-validation-for="CartJson" class="field-error cart-error"></span>
+          <p class="required-note"><span>*</span> Campos obligatorios. Verificaremos los datos antes de registrar el pedido.</p>
+          <button class="place-order" type="submit">Confirmar pedido <span>→</span></button>
+        </form>
+      </section>
+
+      <aside class="summary-card">
+        <div class="summary-heading"><div><p class="eyebrow">Tu selección</p><h2>Resumen del pedido</h2></div><a href="/#catalogo">Editar</a></div>
+        <div id="checkoutItems" class="checkout-items" aria-live="polite"><p class="loading-summary">Cargando tu carrito…</p></div>
+        <div id="checkoutEmpty" class="checkout-empty" hidden><strong>Tu carrito está vacío</strong><p>Regresa a la tienda y agrega productos para continuar.</p><a class="continue-link" href="/#catalogo">Volver al catálogo</a></div>
+        <div class="totals" id="checkoutTotals">
+          <div><span>Subtotal</span><strong id="checkoutSubtotal">S/ 0</strong></div>
+          <div><span>Envío</span><strong id="checkoutShipping">S/ 0</strong></div>
+          <div class="grand-total"><span>Total</span><strong id="checkoutTotal">S/ 0</strong></div>
+          <p>Envío gratis en compras desde S/ 250. Precios en soles peruanos.</p>
+        </div>
+        <div class="safe-note"><span>⌑</span><p><strong>Tus datos están protegidos</strong><br>Este checkout es una demostración académica; no procesa pagos reales.</p></div>
+      </aside>
+    </div>
+  </main>
+  <footer class="checkout-footer">Nexa · Tecnología seleccionada para una vida en movimiento</footer>
+  <script id="nexaCatalog" type="application/json">@Html.Raw(catalogJson)</script>
+  <script src="/js/checkout.js" defer></script>
+</body>
+</html>
